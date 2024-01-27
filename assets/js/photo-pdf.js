@@ -62,7 +62,8 @@ function detectImageFormat(file) {
     if (file && allowedFormats.includes(file.type)) {
         return file.type;
     } else {
-        return null; // Format tidak didukung atau tidak ada file yang diunggah
+        return alert("Mohon Input Gambar JPG/PNG"), window.location.reload();
+        // Format tidak didukung atau tidak ada file yang diunggah
     }
 }
 
