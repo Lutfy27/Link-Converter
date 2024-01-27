@@ -429,7 +429,7 @@
       var startIndex = url.indexOf("/d/") + 3;
       var endIndex = url.indexOf("/view");
       var result = url.substring(startIndex, endIndex);
-      var thumbnailUrl = "https://drive.google.com/thumbnail?id=" + result;
+      var thumbnailUrl = "https://drive.google.com/thumbnail?id=" + result + "&sz=w1000";
       document.getElementById("thumbnailUrl").value = thumbnailUrl;
       hasil = thumbnailUrl;
       var sendToImg = document.getElementById("image");
