@@ -445,7 +445,7 @@
                                             <label for="exampleInputEmail2"
                                                 class="col-sm-2 col-form-label">Hasil</label>
                                             <div class="col-sm-10">
-                                                <input type="email" class="form-control" id="thumbnailUrl"
+                                                <input type="text" class="form-control" id="thumbnailUrl"
                                                     placeholder="-" disabled>
                                                 <div style="margin-top: 10px;">
                                                     <p onclick="copyToClipboard()" class="btn btn-light me-2">Copy</p>
@@ -535,16 +535,29 @@
             getFileId(getExLnk);
         }
 
+        var textarea; // Variabel untuk menyimpan referensi textarea
         function copyToClipboard() {
-            var thumbnailUrlInput = document.getElementById("thumbnailUrl");
-            thumbnailUrlInput.value = hasil;
-            thumbnailUrlInput.select();
+            if (!textarea) {
+                // Buat elemen textarea baru jika belum ada
+                textarea = document.createElement("textarea");
+                // Tambahkan ke body dokumen
+                document.body.appendChild(textarea);
+            }
+
+            textarea.style.display = 'block';
+            // Masukkan teks yang ingin disalin ke dalam textarea
+            textarea.value = hasil;
+            // Seleksi teks dalam textarea
+            textarea.select();
+
             try {
                 var successful = document.execCommand('copy');
+                // Sembunyikan textarea dari tampilan pengguna
+                textarea.style.display = 'none';
                 var msg = successful ? 'successful' : 'unsuccessful';
                 console.log('Copying text command was ' + msg);
                 if (successful) {
-                    alert("Thumbnail URL copied to clipboard!");
+                    alert("URL copied to clipboard!");
                 } else {
                     alert("Unable to copy. Please try again or use alternative method.");
                 }
