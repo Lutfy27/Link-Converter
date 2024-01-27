@@ -6,15 +6,16 @@ async function convertToPDF() {
 
     const file = fileInput.files[0];
     if (file) {
+        resultText.style.display = "block";
         resultText.innerText = 'Converting...'; // Menampilkan teks "Converting..." saat konversi sedang berlangsung
         loadingAnimation.style.display = 'inline-block'; // Menampilkan animasi loading
-
+        const type = detectImageFormat(file);
         setTimeout(async function () {
             const reader = new FileReader();
             reader.readAsArrayBuffer(file);
             reader.onload = async function (event) {
                 const arrayBuffer = event.target.result;
-                const pdfData = await generatePDF(arrayBuffer);
+                const pdfData = await generatePDF(arrayBuffer, type);
                 const pdfObject = `<object width="100%" height="500" data="${pdfData}" type="application/pdf"></object>`;
                 pdfContainer.style.display = "block";
                 pdfContainer.innerHTML = pdfObject;
@@ -22,17 +23,24 @@ async function convertToPDF() {
                 resultText.innerText = 'Result'; // Menampilkan teks "Result" setelah konversi selesai
                 loadingAnimation.style.display = 'none'; // Sembunyikan animasi loading setelah konversi selesai
             };
-        }, 2000); // Menunda eksekusi fungsi berikutnya selama 3 detik (3000 milidetik)
+        }, 1000); // Menunda eksekusi fungsi berikutnya selama 3 detik (3000 milidetik)
     } else {
         alert('Please select an image file.');
     }
 }
 
 
-async function generatePDF(arrayBuffer) {
+async function generatePDF(arrayBuffer, type) {
     const { PDFDocument, degrees } = PDFLib; // Perhatikan bahwa kami menggunakan PDFLib di sini
     const pdfDoc = await PDFDocument.create();
-    const image = await pdfDoc.embedJpg(arrayBuffer);
+    let image;
+
+    if (type == "image/png") {
+        image = await pdfDoc.embedPng(arrayBuffer);
+    }
+    else {
+        image = await pdfDoc.embedJpg(arrayBuffer);
+    }
 
     const page = pdfDoc.addPage();
     const { width, height } = page.getSize();
@@ -48,7 +56,19 @@ async function generatePDF(arrayBuffer) {
     return URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
 }
 
+function detectImageFormat(file) {
+    const allowedFormats = ['image/png', 'image/jpeg', 'image/jpg'];
+
+    if (file && allowedFormats.includes(file.type)) {
+        return file.type;
+    } else {
+        return null; // Format tidak didukung atau tidak ada file yang diunggah
+    }
+}
+
+
 async function cancelPdf() {
     document.getElementById("pdfContainer").style.display = "none";
     document.getElementById("resultText").style.display = "none";
+    document.getElementById('loadingAnimation').style.display = "none";
 }
