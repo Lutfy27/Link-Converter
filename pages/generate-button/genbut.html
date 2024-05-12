@@ -21,6 +21,7 @@
     <!-- End layout styles -->
     <link rel="shortcut icon" href="../../assets/images/favicon.png" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.16.0/pdf-lib.min.js"></script> <!-- Memuat pdf-lib -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -105,13 +106,13 @@
                     </a>
                 </li>
                 <li class="nav-item menu-items">
-                <a class="nav-link" href="../..//pages/generate-button/genbut.html">
-                  <span class="menu-icon">
-                    <i class="mdi mdi-windows"></i>
-                  </span>
-                  <span class="menu-title">Generate Button</span>
-                </a>
-              </li>
+                    <a class="nav-link" href="../../pages/generate-button/genbut.html">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-windows"></i>
+                        </span>
+                        <span class="menu-title">Generate Button</span>
+                    </a>
+                </li>
                 <li class="nav-item menu-items">
                     <a class="nav-link" href="../../pages/pdf/photo-pdf.html">
                         <span class="menu-icon">
@@ -337,7 +338,7 @@
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="page-header">
-                        <h3 class="page-title">Convert Link Gdrive to Overview Image</h3>
+                        <h3 class="page-title">Generate Button</h3>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <!-- <li class="breadcrumb-item"><a href="#">Forms</a></li>
@@ -345,38 +346,43 @@
                             </ol>
                         </nav>
                     </div>
-                    <div class="row">
-                        <div class="col-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Basic form elements</h4>
-                                    <p class="card-description"> Basic form elements </p>
-                                    <form class="forms-sample">
-
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-8 col-md-12 col-sm-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Create Button Link</h4>  
                                         <div class="form-group">
-                                            <label>File upload</label>
-                                            <span class="input-group-append">
-                                                <input type="file" id="fileInput" accept="image/jpeg, image/png"
-                                                    name="img[]" class="file-upload-default">
-                                                <div class="input-group col-xs-12">
-                                                    <input type="text" class="form-control file-upload-info" disabled
-                                                        placeholder="Upload image">
-                                                    <button class="file-upload-browse btn btn-primary"
-                                                        type="button">Upload</button>
-                                            </span>
+                                            <label for="link">Button Name</label>
+                                            <input type="text" class="form-control" id="name" placeholder="Please Input Button Name" required>
+                                            <br>
+                                            <label for="link">Link</label>
+                                            <input type="text" class="form-control" id="link" placeholder="Please Input Link" required>
+                                            <button 
+                                            onclick="getLink()"
+                                            style="margin-top: 10px;" class="btn btn-danger">Create</button>
                                         </div>
-                                </div>
-                                <p onclick="convertToPDF()" type="submit" class="btn btn-primary mr-2">Submit
-                                </p>
-                                <p onclick="cancelPdf()" class="btn btn-dark">Cancel</p>
-                                <div class="form-group">
-                                    <div id="resultText"></div> <!-- Menampilkan teks "hasil" di sini -->
-                                    <div id="loadingAnimation" class="loader"></div>
-                                    <!-- Menampilkan animasi loading -->
-                                    <div id="pdfContainer">
                                     </div>
                                 </div>
-                                </form>
+                            </div>
+                            <div class="col-xl-4 col-md-12 col-sm-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">View</h4>
+                                        <div id="view" style="text-align: center;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Element Button</h4>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="link2" placeholder="-" disabled>
+                                            <button style="margin-top: 10px;" class="btn btn-light" onclick="copyToClipboard()">Copy</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -419,31 +425,112 @@
     <script src="../../assets/js/typeahead.js"></script>
     <script src="../../assets/js/select2.js"></script>
     <!-- End custom js for this page -->
-    <script src="../../assets/js/photo-pdf.js"></script>
+    <!-- <script src="../../assets/js/photo-pdf.js"></script> -->
 </body>
+<script>
+function getLink(){
+ // Get the input element
+ var inputName = document.getElementById("name").value;
+ var inputLink = document.getElementById("link").value;
+
+// Get the value of the input element
+var link = "<a href=\"" + inputLink + "\" target=\"_blank\"><button class=\"button button-icon button-icon-left button-sm button-primary button-winona\">"+inputName+"</button></a>";
+if (inputName == "" || inputLink==""){
+    window.alert('Button Name and Link cannot be empty.');
+}
+else{
+setLink(link);
+document.getElementById("view").classList.add("loading");
+    setTimeout(function() {
+      setView(link);
+      document.getElementById("view").classList.remove("loading");
+    }, 1000);
+}
+// Display the value of the link
+// console.log("Link: " + link);
+}
+
+
+function setLink(link){
+    document.getElementById("link2").value = link;
+}
+
+function copyToClipboard() {
+    var copyText = document.getElementById("link2");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+    navigator.clipboard.writeText(copyText.value);
+    alert("Copied the text: " + copyText.value);
+}
+
+function setView(link){
+    document.getElementById("view").innerHTML = link;
+}
+</script>
 <style>
-    .loader {
-        border: 8px solid #f3f3f3;
-        /* Light grey */
-        border-top: 8px solid #3498db;
-        /* Blue */
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 2s linear infinite;
-        display: none;
-        /* Awalnya disembunyikan */
+    .button.button-primary{
+        color: #fff;
+    background-color: #B12126;
+    border-color: #B12126;
+    }
+    .button-winona {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    }
+    .button {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    padding: 13px 35px;
+    font-size: 14px;
+    line-height: 1.25;
+    border: 2px solid;
+    border-radius: 0;
+    font-family: "Oswald", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    cursor: pointer;
+    vertical-align: middle;
+    user-select: none;
+    transition: 0.25s cubic-bezier(0.2, 1, 0.3, 1);
+    }
+    .button-winona.button-icon-left:hover {
+    background-color: #fd5c03;
     }
 
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
+    .loading {
+  position: relative;
+}
 
-        100% {
-            transform: rotate(360deg);
-        }
-    }
+.loading:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-top: 2px solid #333;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
 
 </html>
